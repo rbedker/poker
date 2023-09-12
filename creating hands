@@ -71,4 +71,14 @@ def royal_flush(hand):
         print("False")
 
 
+def straight(hand):
+     convert = [int(card[0]) if card[0] not in ['T', 'J', 'Q', 'K', 'A'] else conversion[card[0]] for card in hand]
+    
+    if max(convert) - min(convert) == 4:
+        return True
+    
+    else:
+        return False
+
+
 
