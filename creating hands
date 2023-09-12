@@ -55,3 +55,20 @@ def full_house(hand):
     if x + y == 5:
         return True
 
+
+def royal_flush(hand):
+    """royal flush"""
+    suit = []
+    card_value = []
+    for x in hand:
+        suit.append(x[1])
+        card_value.append(x[0])
+    card_value.sort()
+    suit = suit.count(suit[0])
+    if suit == 5 and card_value == ['A', 'J', 'K', 'Q', 'T']:
+        print(hand)
+    else:
+        print("False")
+
+
+
