@@ -141,4 +141,12 @@ def three_of_a_kind(hand):
             continue
 
 
+def flush(hand):
+    """flush"""
+    suit = []
+    for x in hand:
+        suit.append(x[1])
+    suit = suit.count(suit[0])
+    if suit == 5:
+        return True
 
