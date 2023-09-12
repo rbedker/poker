@@ -56,8 +56,9 @@ def full_house(hand):
         return True
 
 
-def royal_flush(hand):
-    """royal flush"""
+def straight_flush(hand):
+    """straight flush"""
+    straight_check = [int(card[0]) if card[0] not in conversion.keys() else conversion[card[0]] for card in hand]
     suit = []
     card_value = []
     for x in hand:
@@ -65,7 +66,7 @@ def royal_flush(hand):
         card_value.append(x[0])
     card_value.sort()
     suit = suit.count(suit[0])
-    if suit == 5 and card_value == ['A', 'J', 'K', 'Q', 'T']:
+    if suit == 5 and max(straight_check) - min(straight_check) == 4:
         print(hand)
     else:
         print("False")
