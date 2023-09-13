@@ -20,7 +20,10 @@ def pair(hand):
     for x in convert:
         counts.update({x: convert.count(x)})
     if len(counts) == 4:
-        return True
+        for x in counts:
+            if counts.get(x) == 2:
+                return_list = [True, x]
+        return return_list
 
 def two_pair(hand):
     """same but looking for 2 pairs by sorting using lambda"""
@@ -171,6 +174,20 @@ for x in range(0,1000):
     elif hand_rank(p1[x]) < hand_rank(p2[x]):
         p2_score += 1
     elif hand_rank(p1[x]) == hand_rank(p2[x]):
+        if hand_rank(p1[x]) == 2:
+                if pair(p1[x])[1] > pair(p2[x])[1]:
+                    p1_score += 1
+    
+                elif pair(p1[x])[1] < pair(p2[x])[1]:
+                    p2_score += 1
+     
+                elif pair(p1[x])[1] == pair(p2[x])[1]:
+                    
+                    if pair(p1[x])[2] > pair(p2[x])[2]:
+                        p1_score += 1
+    
+                    elif pair(p1[x])[2] < pair(p2[x])[2]:
+                        p2_score += 1
         if hand_rank(p1[x]) == 1:
             temp_1 = []
             temp_2 = []
