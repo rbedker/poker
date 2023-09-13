@@ -1,0 +1,220 @@
+#The code below creates two different lists, p1 and p2 and then each list is comprised of a list of lists aka "hands"
+p1 = []
+p2 = []
+
+with open("poker.txt", "r", newline='\n') as f:
+    for x in f:
+        p1.append(x[0:14])
+        p2.append(x[15:29])
+
+p1 = [x.split(sep=" ") for x in p1]
+p2 = [x.split(sep=" ") for x in p2]
+
+conversion = {'T': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
+
+value_dict = {'2' : 2,
+             '3' : 3,
+             '4' : 4,
+             '5' : 5,
+             '6' : 6,
+             '7' : 7,
+             '8' : 8,
+             '9' : 9,
+             'T' : 10,
+             'J' : 11,
+             'Q' : 12,
+             'K' : 13,
+             'A' : 14}
+
+def pair(hand):
+    """ Hokay so this is what happens, you get a hand and then basically qthing that isn't a letter gets turned into an int and if is alpha, their value is added using the conversion chart above"""
+    convert = [int(card[0]) if card[0] not in conversion.keys() else conversion[card[0]] for card in hand]
+    counts = {}
+    for x in convert:
+        counts.update({x: convert.count(x)})
+    if len(counts) == 4:
+        for x in counts:
+            if counts.get(x) == 2:
+                return_list = [True, x, max(list(counts.keys()))]
+        return return_list
+
+def two_pair(hand):
+    convert = [int(card[0]) if card[0] not in conversion.keys() else conversion[card[0]] for card in hand]
+    counts = {}
+    for x in convert:
+        counts.update({x: convert.count(x)})
+    counts = dict(sorted(counts.items(), key=lambda x: x[1], reverse=True))
+    if len(counts) == 3 and counts[list(counts.keys())[0]] == 2:     
+        return True
+
+def full_house(hand):
+    """3 of a kind, two of a kind returns "True" if the hand is a full house"""
+    card_value = []
+    for x in hand:
+        card_value.append(x[0])
+    card_value.sort()
+    y = card_value.count(card_value[0])
+    x = card_value.count(card_value[-1])
+    if x + y == 5:
+        return True
+
+def straight_flush(hand):
+    """straight flush"""
+    straight_check = [int(card[0]) if card[0] not in conversion.keys() else conversion[card[0]] for card in hand]
+    suit = []
+    card_value = []
+    for x in hand:
+        suit.append(x[1])
+        card_value.append(x[0])
+    card_value.sort()
+    suit = suit.count(suit[0])
+    if suit == 5 and max(straight_check) - min(straight_check) == 4:
+        return True
+
+def royal_flush(hand):
+    """royal flush"""
+    suit = []
+    card_value = []
+    for x in hand:
+        suit.append(x[1])
+        card_value.append(x[0])
+    card_value.sort()
+    suit = suit.count(suit[0])
+    if suit == 5 and card_value == ['A', 'J', 'K', 'Q', 'T']:
+        print(hand)
+
+def straight(hand):
+    convert = [int(card[0]) if card[0] not in ['T', 'J', 'Q', 'K', 'A'] else conversion[card[0]] for card in hand]
+    convert.sort()
+    counter = 0
+    for x in range(0,len(convert)-1):
+        if convert[x] + 1 == convert[x+1]:
+            counter +=1
+    if counter == 4:
+        return True
+
+def four_of_a_kind(hand):
+    hand_values = []
+    counter = 0
+    all_card_values = ['2','3','4','5','6','7','8','9','T','J','Q','K','A']
+    #seperates values from the suits
+    for cards in hand:
+        hand_values.append(cards[0])
+    #sorts same values to be next to each other
+    hand_values.sort()
+    for x in all_card_values:
+        counter = 0
+        for y in hand_values:
+            if x != y:
+                continue
+        #counts reoccuring values       
+            counter += 1
+        #if there are exactly 4 like values, return true
+        if counter == 4:
+            return True
+            break
+        #if counter comes out to anything other than 4, continue 
+    
+def three_of_a_kind(hand):
+    hand_values = []
+    counter = 0
+    all_card_values = ['2','3','4','5','6','7','8','9','T','J','Q','K', 'A']
+    for cards in hand:
+        hand_values.append(cards[0])
+    hand_values.sort()
+    for x in all_card_values:
+        counter = 0
+        for y in hand_values:
+            if x != y:
+                continue    
+            counter += 1
+        if counter == 3:
+            return True
+            break
+
+def flush(hand):
+    """flush"""
+    suit = []
+    for x in hand:
+        suit.append(x[1])
+    suit = suit.count(suit[0])
+    if suit == 5:
+        return True
+    
+def hand_rank(hand):
+    """Determine the rank of a poker hand."""
+    if royal_flush(hand):
+        return 10 
+    elif straight_flush(hand):
+        return 9 
+    elif four_of_a_kind(hand):
+        return 8 
+    elif full_house(hand):
+        return 7
+    elif flush(hand):
+        return 6
+    elif straight(hand):
+        return 5
+    elif three_of_a_kind(hand):
+        return 4
+    elif two_pair(hand):
+        return 3
+    elif pair(hand):
+        return 2
+    else:
+        return 1
+
+
+
+p1_score = 0
+p2_score = 0
+p3 = 0
+for x in range(0,1000):
+    if hand_rank(p1[x]) > hand_rank(p2[x]):
+        p1_score += 1
+    elif hand_rank(p1[x]) < hand_rank(p2[x]):
+        p2_score += 1
+    elif hand_rank(p1[x]) == hand_rank(p2[x]):
+        if hand_rank(p1[x]) == 2:
+                if pair(p1[x])[1] > pair(p2[x])[1]:
+                    p1_score += 1
+    
+                elif pair(p1[x])[1] < pair(p2[x])[1]:
+                    p2_score += 1
+     
+                elif pair(p1[x])[1] == pair(p2[x])[1]:
+                    
+                    if pair(p1[x])[2] > pair(p2[x])[2]:
+                        p1_score += 1
+    
+                    elif pair(p1[x])[2] < pair(p2[x])[2]:
+                        p2_score += 1
+        if hand_rank(p1[x]) == 1:
+            temp_1 = []
+            temp_2 = []
+            for card in p1[x]:
+                temp_1.append(list(card))
+
+            for card in p2[x]:
+                temp_2.append(list(card))
+
+            v1 = value_dict[temp_1[0][0]]
+            v2 = value_dict[temp_2[0][0]]
+
+            for card in temp_1:
+                if value_dict[card[0]] > v1:
+                    v1 = value_dict[card[0]]
+
+            for card in temp_2:
+                if value_dict[card[0]] > v2:
+                    v2 = value_dict[card[0]]
+            if v1 > v2:
+                p1_score += 1
+            elif v1 < v2:
+                p2_score += 1
+        elif hand_rank(p1[x]) == 2:
+            p1_pair = []
+            p2_pair = []
+            
+            
+print(p1_score)
