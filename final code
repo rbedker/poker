@@ -72,10 +72,11 @@ def royal_flush(hand):
         return True
 
 def straight(hand):
-    """Sorts hand and accounts for Aces"""
-    convert = [int(card[0]) if card[0] not in ['T', 'J', 'Q', 'K', 'A'] else conversion[card[0]] for card in hand]
-    
-    if max(convert) - min(convert) == 4 or sorted(convert) == [2,3,4,5,14]:
+    card_value = []
+    for x in hand:
+        card_value.append(x[0])
+    card_value.sort()
+    if card_value == ['2', '3', '4', '5', 'A'] or card_value == ['2', '3', '4', '5', '6'] or card_value == ['3', '4', '5', '6', '7'] or card_value == ['4', '5', '6', '7', '8'] or card_value == ['5', '6', '7', '8', '9'] or card_value == ['6', '7', '8', '9', 'T'] or card_value == ['7', '8', '9', 'T', 'J'] or card_value == ['8', '9', 'T', 'J', 'Q'] or card_value == ['9', 'T', 'J', 'Q', 'K'] or card_value == ['T', 'J', 'Q', 'K', 'A']:
         return True
 
 def four_of_a_kind(hand):
